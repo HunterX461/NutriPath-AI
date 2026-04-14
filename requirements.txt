@@ -1,6 +1,9 @@
-fastapi
+fastapi[all]
 uvicorn
 pydantic
 google-generativeai
 pytest
 httpx
+google-auth-oauthlib
+google-api-python-client
+itsdangerous
