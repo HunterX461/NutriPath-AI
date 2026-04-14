@@ -38,6 +38,7 @@
 
         header { margin-bottom: 40px; }
         h1 { font-size: 3rem; margin: 0; font-weight: 700; text-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        h1 span { color: var(--accent-glow); }
         p.subtitle { font-size: 1.3rem; color: var(--text-muted); margin-top: 10px; font-weight: 300; }
 
         .dashboard {
@@ -61,13 +62,13 @@
         .glass-card h3 { margin-top: 0; font-weight: 500; font-size: 1.1rem; color: var(--text-muted); display: flex; align-items: center; gap: 10px; }
         .metric-value { font-size: 2.2rem; font-weight: 700; margin: 15px 0; color: var(--accent-glow); }
 
-        .recommendation-card { grid-column: 1 / -1; background: rgba(0, 210, 255, 0.15); text-align: center; }
-        .res-action { font-size: 2rem; font-weight: 700; margin-bottom: 15px; text-shadow: 0 2px 10px rgba(0,210,255, 0.4); }
-        .res-logic { font-size: 1.2rem; color: #e0e0e0; font-weight: 300; line-height: 1.6; max-width: 80%; margin: 0 auto; }
+        .recommendation-card { grid-column: 1 / -1; background: rgba(0, 210, 255, 0.15); text-align: center; border-color: rgba(0, 210, 255, 0.3); }
+        .res-action { font-size: 2.2rem; font-weight: 700; margin-bottom: 15px; text-shadow: 0 2px 10px rgba(0,210,255, 0.4); }
+        .res-logic { font-size: 1.3rem; color: #e0e0e0; font-weight: 300; line-height: 1.6; max-width: 80%; margin: 0 auto; }
 
         button {
             color: white; border: none; border-radius: 50px; padding: 20px 50px; font-size: 1.5rem; font-family: inherit; font-weight: 700;
-            cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: all 0.3s;
+            cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: all 0.3s; margin: 10px;
         }
         
         button.btn-primary { background: linear-gradient(45deg, #00c6ff, #0072ff); }
@@ -76,73 +77,78 @@
         button.btn-google { background: white; color: #333; display: none; align-items: center; justify-content: center; gap: 10px; margin: 0 auto; }
         button.btn-google:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(255,255,255,0.2); }
 
-        }
         .loader-wrapper { display: none; margin: 40px 0; }
         .spinner { width: 50px; height: 50px; border: 4px solid var(--card-border); border-top: 4px solid var(--accent-glow); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px auto; }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes fadeInRise { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
 
+        @media (max-width: 600px) {
+            .dashboard { grid-template-columns: 1fr; }
+            h1 { font-size: 2.2rem; }
+            button { width: 100%; padding: 20px 0; font-size: 1.3rem;}
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="container" role="main">
         <header>
-            <h1>NutriPath AI</h1>
-            <p class="subtitle">Biological Intelligence for Daily Peak Performance (LIVE DATA)</p>
+            <h1 id="main-greeting">NutriPath <span>AI</span></h1>
+            <p class="subtitle">Biological Intelligence for Peak Performance</p>
         </header>
 
         <div class="controls">
-            <button id="login-btn" class="btn-google" onclick="window.location.href='/auth/login'">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" width="24" height="24">
+            <button id="login-btn" class="btn-google" aria-label="Connect Google Account" onclick="window.location.href='/auth/login'">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Logo" width="24" height="24">
                 Connect Google Account
             </button>
             
-            <button id="analyze-btn" class="btn-primary" style="display: none;" onclick="startAnalysis()">
-                <i class="fa-solid fa-bolt"></i> Analyze Real Biometrics
+            <button id="analyze-btn" class="btn-primary" style="display: none;" aria-label="Trigger AI Analysis" onclick="startAnalysis()">
+                <i class="fa-solid fa-bolt" aria-hidden="true"></i> Synthesize My Day
             </button>
         </div>
 
-        <div class="loader-wrapper" id="loader">
+        <div class="loader-wrapper" id="loader" aria-live="polite">
             <div class="spinner"></div>
-            <p style="font-size: 1.2rem; color: var(--text-muted);" id="loader-text">Synchronizing Real Live Data...</p>
+            <p style="font-size: 1.2rem; color: var(--text-muted);" id="loader-text">Authorizing Bio-Temporal Request...</p>
         </div>
 
-        <div class="dashboard" id="dashboard">
-            <div class="glass-card">
-                <h3><i class="fa-solid fa-heart-pulse"></i> Sensor Readiness</h3>
-                <div class="metric-value" id="val-readiness">--%</div>
-                <p style="color: var(--text-muted); margin:0;">Real-time health proxy</p>
+        <div class="dashboard" id="dashboard" role="region" aria-label="Analysis Results">
+            <div class="glass-card" aria-labelledby="readiness-lbl">
+                <h3 id="readiness-lbl"><i class="fa-solid fa-heart-pulse"></i> Sensor Readiness</h3>
+                <div class="metric-value" id="val-readiness" aria-live="assertive">--%</div>
+                <p style="color: var(--text-muted); margin:0;">Real-time metabolic proxy</p>
             </div>
 
-            <div class="glass-card">
-                <h3><i class="fa-regular fa-calendar-check"></i> Actual Google Calendar</h3>
-                <div class="metric-value" style="font-size: 1.4rem; color: #ffb74d;" id="val-stress">--</div>
-                <p style="color: var(--text-muted); margin:0;">Your Location: <span id="val-location">--</span></p>
+            <div class="glass-card" aria-labelledby="stress-lbl">
+                <h3 id="stress-lbl"><i class="fa-regular fa-calendar-check"></i> Incoming Stress Load</h3>
+                <div class="metric-value" style="font-size: 1.3rem; color: #ffb74d;" id="val-stress" aria-live="assertive">--</div>
+                <p style="color: var(--text-muted); margin:0;">Context: <span id="val-location">--</span></p>
             </div>
 
-            <div class="glass-card recommendation-card">
-                <h3><i class="fa-solid fa-robot"></i> Live Recommended Protocol</h3>
-                <div class="res-action" id="res-action">Generating...</div>
-                <div class="res-logic" id="res-logic">Analyzing metrics...</div>
+            <div class="glass-card recommendation-card" aria-labelledby="rec-lbl">
+                <h3 id="rec-lbl"><i class="fa-solid fa-robot"></i> Optimal Protocol</h3>
+                <div class="res-action" id="res-action" aria-live="assertive">Generating...</div>
+                <div class="res-logic" id="res-logic">Analyzing biometrics...</div>
             </div>
         </div>
     </div>
 
     <script>
-        // Check Auth Status on Load
         window.onload = async function() {
             try {
                 const res = await fetch('/auth/status');
                 const data = await res.json();
                 if (data.authenticated) {
+                    if(data.name && data.name !== "User") {
+                        document.getElementById('main-greeting').innerHTML = `Welcome, <span>${data.name}</span>`;
+                    }
                     document.getElementById('analyze-btn').style.display = 'inline-block';
                 } else {
                     document.getElementById('login-btn').style.display = 'flex';
                 }
             } catch (e) {
-                console.error("Auth check failed", e);
                 document.getElementById('login-btn').style.display = 'flex';
             }
         };
@@ -151,7 +157,7 @@
             document.getElementById('analyze-btn').style.display = 'none';
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('loader').style.display = 'block';
-            document.getElementById('loader-text').innerText = "Acquiring GPS location...";
+            document.getElementById('loader-text').innerText = "Establishing secure connection array...";
 
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
@@ -161,16 +167,16 @@
                     },
                     (error) => {
                         console.warn("Location denied, fetching without it.");
-                        fetchRecommendation("Location Access Denied");
+                        fetchRecommendation("Encrypted Profile");
                     }
                 );
             } else {
-                fetchRecommendation("Geolocation Unsupported");
+                fetchRecommendation("Unsupported Hardware");
             }
         }
 
         async function fetchRecommendation(locationStr) {
-            document.getElementById('loader-text').innerText = "Querying Live Google Calendar & API...";
+            document.getElementById('loader-text').innerText = "Querying Live Google Cloud Graph...";
             try {
                 const response = await fetch('/api/recommendation', {
                     method: 'POST',
@@ -179,39 +185,34 @@
                 });
 
                 if (response.status === 401) {
-                    alert("Your Google session expired. Please reconnect.");
+                    alert("Your Google session expired. Re-authentication required.");
                     window.location.href = '/auth/login';
                     return;
                 }
-                if (!response.ok) throw new Error('API Error');
+                if (!response.ok) throw new Error('API Interruption');
 
                 const data = await response.json();
 
-                // Populate Biometric Dashboard
                 document.getElementById('val-readiness').innerText = (data.state.READINESS * 100).toFixed(0) + '%';
-                document.getElementById('val-stress').innerText = data.state.STRESS_LOAD;
+                document.getElementById('val-stress').innerText = data.state.STRESS_LOAD.substring(0, 50) + (data.state.STRESS_LOAD.length > 50 ? '...' : '');
                 document.getElementById('val-location').innerText = data.state.LOCATION_CONTEXT;
 
-                // Color code readiness
-                const readinessColor = data.state.READINESS > 0.7 ? '#69f0ae' : (data.state.READINESS > 0.4 ? '#ffd54f' : '#ff5252');
-                document.getElementById('val-readiness').style.color = readinessColor;
+                const rc = data.state.READINESS;
+                document.getElementById('val-readiness').style.color = rc > 0.7 ? '#69f0ae' : (rc > 0.4 ? '#ffd54f' : '#ff5252');
 
-                // Populate AI Recommendation
                 document.getElementById('res-action').innerText = data.recommendation.action;
                 document.getElementById('res-logic').innerText = data.recommendation.logic;
 
-                // Reveal Dashboard
                 document.getElementById('loader').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'grid';
                 
                 setTimeout(() => {
-                    document.getElementById('analyze-btn').innerHTML = '<i class="fa-solid fa-rotate-right"></i> Refresh Live Data';
+                    document.getElementById('analyze-btn').innerHTML = '<i class="fa-solid fa-rotate-right"></i> Refresh Live Feed';
                     document.getElementById('analyze-btn').style.display = 'inline-block';
                 }, 1000);
 
             } catch (error) {
-                console.error("Analysis Failed:", error);
-                alert("Failed to analyze live data.");
+                alert("Protocol generation failed securely.");
                 document.getElementById('loader').style.display = 'none';
                 document.getElementById('analyze-btn').style.display = 'inline-block';
             }

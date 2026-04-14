@@ -1,8 +1,11 @@
 fastapi[all]
-uvicorn
+uvicorn[standard]
+gunicorn
 pydantic
 google-generativeai
 pytest
+pytest-mock
+pytest-asyncio
 httpx
 google-auth-oauthlib
 google-api-python-client
