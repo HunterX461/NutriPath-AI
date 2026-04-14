@@ -39,10 +39,21 @@ class ClientPayload(BaseModel):
     location: str
 
 def get_flow(request: Request):
-    flow = Flow.from_client_secrets_file(
-        CREDENTIALS_FILE,
-        scopes=SCOPES
-    )
+    creds_json_str = os.environ.get("GOOGLE_CREDENTIALS_JSON")
+    if creds_json_str:
+        # Running in Cloud Run with env var
+        creds_dict = json.loads(creds_json_str)
+        flow = Flow.from_client_config(
+            creds_dict,
+            scopes=SCOPES
+        )
+    else:
+        # Running locally with file
+        flow = Flow.from_client_secrets_file(
+            CREDENTIALS_FILE,
+            scopes=SCOPES
+        )
+    
     # Dynamically set redirect URI based on the actual domain (localhost vs cloud run)
     flow.redirect_uri = request.url_for('callback')._url
     return flow
